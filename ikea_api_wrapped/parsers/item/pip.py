@@ -14,6 +14,8 @@ class PipItemDict(TypedDict):
     item_code: str
     price: int
     url: str
+    category_name: str | None
+    category_url: str | None
 
 
 class PipItem:
@@ -29,9 +31,18 @@ class PipItem:
     def _get_url(self) -> str:
         return self.d.pipUrl
 
+    def _get_category_name_and_url(self) -> tuple[str | None, str | None]:
+        for _, ref in self.d.catalogRefs.items():
+            if ref.elements[0].name and ref.elements[0].url:
+                return ref.elements[0].name, ref.elements[0].url
+        return None, None
+
     def __call__(self):
+        category_name, category_url = self._get_category_name_and_url()
         return PipItemDict(
             item_code=self._get_item_code(),
             price=self._get_price(),
             url=self._get_url(),
+            category_name=category_name,
+            category_url=category_url,
         )
