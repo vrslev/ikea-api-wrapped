@@ -56,7 +56,7 @@ class IngkaItem:
             for child in self.d.childItems:
                 self.child_items.append(
                     {
-                        "item_code": child.itemKey.itemNo,
+                        "item_code": str(child.itemKey.itemNo),
                         "qty": child.qty,
                     }
                 )

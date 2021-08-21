@@ -134,7 +134,7 @@ class IowsItem:
         self.child_items = []
         for d in raw_child_items:
             item: dict[str, Any] = {
-                "item_code": d.ItemNo,
+                "item_code": str(d.ItemNo),
                 "item_name": self.get_name(d),
                 "weight": self.get_item_weight(d),
                 "qty": d.Quantity or 1,
