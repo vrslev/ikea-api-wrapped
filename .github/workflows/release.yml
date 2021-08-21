@@ -16,8 +16,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Semantic Release
-        uses: relekang/python-semantic-release@master
+      - name: Install Python 3.9
+        uses: actions/setup-python@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          python-version: 3.9
+
+      - name: Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cache/pip
+          key: ${{ runner.os }}-pip
+
+      - name: Set git user
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "action@github.com"
+
+      - name: Install semantic-release
+        run: pip install -U python-semantic-release
+
+      - name: Run Semantic-release
+        run: semantic-release publish -D commit_author="github-actions <action@github.com>"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
