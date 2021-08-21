@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.0 (2021-08-21)
+### Feature
+* Allow list and int types in `get_item_codes` ([`61cc94e`](https://github.com/vrslev/ikea-api-wrapped/commit/61cc94edc460ac77eaa3b46be2cc6aee44f8a45a))
+
 ## v0.2.2 (2021-08-21)
 ### Fix
 * Include item parsers ([`6ff9ffe`](https://github.com/vrslev/ikea-api-wrapped/commit/6ff9ffe25c9e2775cc28078fa7bc12ff3ef2475b))
