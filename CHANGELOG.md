@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.2.2 (2021-08-21)
+### Fix
+* Include item parsers ([`6ff9ffe`](https://github.com/vrslev/ikea-api-wrapped/commit/6ff9ffe25c9e2775cc28078fa7bc12ff3ef2475b))
+
 ## v0.2.1 (2021-08-21)
 ### Fix
 * **Item PIP:** Parse category name and url ([`90f9a52`](https://github.com/vrslev/ikea-api-wrapped/commit/90f9a5250a71d5169cd5e6cb8254e1e4b5758253))
