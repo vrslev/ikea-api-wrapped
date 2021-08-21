@@ -33,6 +33,10 @@ class IngkaPipItemDict(IngkaItemDict, PipItemDict):
     pass
 
 
+class AnyParsedItem(IowsItemDict, IngkaPipItemDict):
+    pass
+
+
 def get_purchase_history(api: IkeaApi):
     response = api.Purchases.history()
     return parse_purchase_history(response)
