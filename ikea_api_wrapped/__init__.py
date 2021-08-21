@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import re
 
@@ -14,7 +16,7 @@ from ikea_api_wrapped.wrappers import (
 __version__ = "0.2.2"
 __all__ = [
     "unshorten_ingka_pagelinks",
-    "get_item_codes_from_string",
+    "get_item_codes",
     "format_item_code",
     "add_items_to_cart",
     "get_delivery_services",
@@ -56,7 +58,7 @@ def unshorten_ingka_pagelinks(message: str):
     return _fetch_location_headers(shorten_urls)
 
 
-def get_item_codes_from_string(message: str) -> list[str]:
+def _get_item_codes_from_string(message: str) -> list[str]:
     raw_item_codes = re.findall(r"\d{3}[, .-]{0,2}\d{3}[, .-]{0,2}\d{2}", message)
     regex = re.compile(r"[^0-9]")
     try:
@@ -66,8 +68,14 @@ def get_item_codes_from_string(message: str) -> list[str]:
         return []
 
 
+def get_item_codes(message: str | int | list[str | int]) -> list[str]:
+    if not isinstance(message, str):
+        message = str(message)
+    return _get_item_codes_from_string(unshorten_ingka_pagelinks(message))
+
+
 def format_item_code(item_code: str):
-    matches = get_item_codes_from_string(item_code)
+    matches = _get_item_codes_from_string(item_code)
     if matches:
         item_code = matches[0]
     return item_code[0:3] + "." + item_code[3:6] + "." + item_code[6:8]
