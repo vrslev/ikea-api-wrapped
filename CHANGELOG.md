@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.1 (2021-08-21)
+### Fix
+* Force str over int in item_code type ([`2b3d990`](https://github.com/vrslev/ikea-api-wrapped/commit/2b3d990d45c9c968a9c4913f397f7b23c0854830))
+
 ## v0.3.0 (2021-08-21)
 ### Feature
 * Allow list and int types in `get_item_codes` ([`61cc94e`](https://github.com/vrslev/ikea-api-wrapped/commit/61cc94edc460ac77eaa3b46be2cc6aee44f8a45a))
