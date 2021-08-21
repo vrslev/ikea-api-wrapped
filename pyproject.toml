@@ -1,0 +1,25 @@
+[tool.black]
+target-version = ["py39"]
+
+[tool.isort]
+profile = "black"
+
+[tool.pyright]
+exclude = ["venv"]
+typeCheckingMode = "strict"
+pythonVersion = "3.9"
+reportMissingTypeStubs = false
+reportGeneralTypeIssues = false
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+reportUnknownArgumentType = false
+
+[tool.semantic_release]
+branch = "main"
+version_toml = "ikea_api_wrapped/__init__.py:__version__"
+build_command = "pip install build && python -m build"
+commit_subject = "сhore: Update version to {version}"
+upload_to_pypi = false
+
+[build-system]
+requires = ["setuptools", "wheel"]
