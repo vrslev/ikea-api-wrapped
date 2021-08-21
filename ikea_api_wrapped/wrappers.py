@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, TypedDict
 
 from ikea_api import IkeaApi
 from ikea_api.endpoints import fetch_items_specs
@@ -33,8 +33,17 @@ class IngkaPipItemDict(IngkaItemDict, PipItemDict):
     pass
 
 
-class AnyParsedItem(IowsItemDict, IngkaPipItemDict):
-    pass
+class AnyParsedItem(TypedDict):
+    is_combination: bool
+    item_code: str
+    name: str
+    image_url: str | None
+    weight: float
+    child_items: list[dict[str, str | float | int]]
+    price: int
+    url: str
+    category_name: str | None
+    category_url: str | None
 
 
 def get_purchase_history(api: IkeaApi):
