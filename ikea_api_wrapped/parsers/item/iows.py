@@ -69,20 +69,17 @@ class IowsItem:
 
         first_part: str | None = item.ProductName
         second_part: str | None = item.ProductTypeName
-
-        if first_part and second_part:
-            name = first_part + " " + second_part.capitalize()
-        elif first_part:
-            name = first_part
-        elif second_part:
-            name = second_part.capitalize()
-        else:
-            name = None
+        if second_part and not first_part:
+            second_part = second_part.capitalize()
 
         measurement_text: str | None = self.d.ItemMeasureReferenceTextMetric
         design_text: str | None = self.d.ValidDesignText
 
-        return ", ".join(attr for attr in (name, measurement_text, design_text) if attr)
+        return ", ".join(
+            attr
+            for attr in (first_part, second_part, measurement_text, design_text)
+            if attr
+        )
 
     def get_image_url(self):
         images_raw: list[Any] = self.d.RetailItemImageList.RetailItemImage
