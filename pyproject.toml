@@ -13,6 +13,7 @@ reportGeneralTypeIssues = false
 reportUnknownMemberType = false
 reportUnknownVariableType = false
 reportUnknownArgumentType = false
+reportUnusedCallResult = true
 
 [tool.semantic_release]
 branch = "main"
