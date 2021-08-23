@@ -6,6 +6,7 @@ from typing import Any, Callable, TypedDict
 from box import Box
 
 from ikea_api_wrapped.parsers import get_box
+from ikea_api_wrapped.parsers.item import ChildItemDict
 
 
 def parse_ingka_item(dictionary: dict[str, Any]):
@@ -16,17 +17,15 @@ class IngkaItemDict(TypedDict):
     is_combination: bool
     item_code: str
     name: str
-    image_url: str
+    image_url: str | None
     weight: float
-    child_items: list[dict[str, Any]]
+    child_items: list[ChildItemDict]
 
 
 class IngkaItem:
     def __init__(self, dictionary: dict[str, Any]):
         self.d = get_box(dictionary)
-        self.get_localized_chunk()
-        self.weight, self.child_items = 0.0, []
-        self.get_weight_or_child_items()
+        self._local_chunk = self.get_local_chunk()
 
     def __call__(self):
         return IngkaItemDict(
@@ -34,32 +33,34 @@ class IngkaItem:
             item_code=self.get_item_code(),
             name=self.get_name(),
             image_url=self.get_image_url(),
-            weight=self.weight,
-            child_items=self.child_items,
+            weight=self.get_weight(),
+            child_items=self.get_child_items(),
         )
 
-    def get_localized_chunk(self):
+    def get_local_chunk(self) -> Box:
         for communication in self.d.localisedCommunications:
             if communication.languageCode == "ru":
-                self._local_chunk = communication
-                return
+                return communication
         raise RuntimeError("Cannot find localized chunk")
 
-    def get_weight_or_child_items(self):
+    def get_weight(self) -> float:
         measurements: list[Box] = self._local_chunk.packageMeasurements
         if measurements:
             for package in measurements:
                 if package.type == "WEIGHT":
-                    self.weight = round(float(package.valueMetric), 2)
+                    return round(float(package.valueMetric), 2)
+        return 0.0
 
-        elif self.is_combination:
-            for child in self.d.childItems:
-                self.child_items.append(
-                    {
-                        "item_code": str(child.itemKey.itemNo),
-                        "qty": child.qty,
-                    }
-                )
+    def get_child_items(self) -> list[ChildItemDict]:
+        return [
+            {
+                "item_code": str(child.itemKey.itemNo),
+                "item_name": None,
+                "weight": 0.0,
+                "qty": child.quantity,
+            }
+            for child in self.d.childItems or []
+        ]
 
     def get_is_combination(self) -> bool:
         return self.d.itemKey.itemType == "SPR"
