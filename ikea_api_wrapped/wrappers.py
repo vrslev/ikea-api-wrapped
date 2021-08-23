@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, TypedDict
+from typing import Any
 
 from ikea_api import IkeaApi
 from ikea_api.endpoints import fetch_items_specs
@@ -8,8 +8,9 @@ from ikea_api.endpoints.item import parse_item_code
 from ikea_api.endpoints.purchases import OrderInfoQuery
 from ikea_api.errors import GraphqlError, ItemFetchError, OrderCaptureError
 
+from ikea_api_wrapped.parsers.item import ParsedItem
 from ikea_api_wrapped.parsers.item.ingka import IngkaItemDict, parse_ingka_item
-from ikea_api_wrapped.parsers.item.iows import IowsItemDict, parse_iows_item
+from ikea_api_wrapped.parsers.item.iows import parse_iows_item
 from ikea_api_wrapped.parsers.item.pip import PipItemDict, parse_pip_item
 from ikea_api_wrapped.parsers.order_capture import parse_delivery_options
 from ikea_api_wrapped.parsers.purchases import (
@@ -27,23 +28,6 @@ class NoDeliveryOptionsAvailableError(Exception):
 
 class PurchaseInfoDict(StatusBannerOrderDict, CostsOrderDict):
     pass
-
-
-class IngkaPipItemDict(IngkaItemDict, PipItemDict):
-    pass
-
-
-class AnyParsedItem(TypedDict):
-    is_combination: bool
-    item_code: str
-    name: str
-    image_url: str | None
-    weight: float
-    child_items: list[dict[str, str | float | int]]
-    price: int
-    url: str
-    category_name: str | None
-    category_url: str | None
 
 
 def get_purchase_history(api: IkeaApi):
@@ -78,7 +62,7 @@ def get_delivery_services(api: IkeaApi, items: dict[str, int], zip_code: str):
 
 
 def add_items_to_cart(api: IkeaApi, items: dict[str, int]):
-    api.Cart.clear()
+    api.Cart.clear()  # type: ignore
 
     res: dict[str, dict[str, Any] | list[Any] | None] = {
         "cannot_add": [],
@@ -113,14 +97,12 @@ def _get_iows_items(item_codes: list[str]):
     return [parse_iows_item(item) for item in fetched]
 
 
-def _bind_ingka_and_pip_objects(
-    ingka: IngkaItemDict, pip: PipItemDict
-) -> IngkaPipItemDict:
+def _bind_ingka_and_pip_objects(ingka: IngkaItemDict, pip: PipItemDict) -> ParsedItem:
     return ingka | pip
 
 
 def _get_ingka_pip_items(item_codes: list[str]):
-    res: list[IowsItemDict | IngkaPipItemDict] = []
+    res: list[ParsedItem] = []
     items_ingka: list[IngkaItemDict] = []
     items_to_fetch_pip: dict[str, bool] = {}
 
@@ -129,12 +111,6 @@ def _get_ingka_pip_items(item_codes: list[str]):
             parsed_item = parse_ingka_item(fetched_item)
             items_ingka.append(parsed_item)
             items_to_fetch_pip[parsed_item["item_code"]] = parsed_item["is_combination"]
-
-            if parsed_item["is_combination"]:
-                fetched_child_items = get_items(
-                    [item["item_code"] for item in parsed_item["child_items"]]
-                )
-                res += fetched_child_items["items"]
 
     fetched_items_map_pip: dict[str, PipItemDict] = {}
     for fetched_item in fetch_items_specs.pip(items_to_fetch_pip):
@@ -154,10 +130,9 @@ def _get_ingka_pip_items(item_codes: list[str]):
     return res
 
 
-def get_items(item_codes: list[str]):
+def get_items(item_codes: list[str]) -> list[ParsedItem]:
     items_to_fetch = parse_item_code(item_codes)
-    fetched_items: list[IowsItemDict | IngkaPipItemDict] = []
-    unsuccessful: list[str] = []
+    fetched_items: list[ParsedItem] = []
 
     def update_items_to_fetch():
         nonlocal items_to_fetch
@@ -171,18 +146,8 @@ def get_items(item_codes: list[str]):
     update_items_to_fetch()
 
     if not items_to_fetch:
-        return {
-            "items": fetched_items,
-            "unsuccessful": unsuccessful,
-        }
+        return fetched_items
 
     fetched_items += _get_ingka_pip_items(items_to_fetch)
 
-    return {
-        "items": fetched_items,
-        "unsuccessful": [
-            item["item_code"]
-            for item in fetched_items
-            if item["item_code"] not in item_codes
-        ],
-    }
+    return fetched_items
