@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.2 (2021-08-23)
+### Fix
+* **get_items:** Don't fetch child items in ingka item, ([`6fdd1fa`](https://github.com/vrslev/ikea-api-wrapped/commit/6fdd1fa4769882449245e66e80fe41671ab66f84))
+
 ## v0.3.1 (2021-08-21)
 ### Fix
 * Force str over int in item_code type ([`2b3d990`](https://github.com/vrslev/ikea-api-wrapped/commit/2b3d990d45c9c968a9c4913f397f7b23c0854830))
