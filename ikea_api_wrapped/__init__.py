@@ -13,7 +13,7 @@ from ikea_api_wrapped.wrappers import (
     get_purchase_info,
 )
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 __all__ = [
     "unshorten_ingka_pagelinks",
     "get_item_codes",

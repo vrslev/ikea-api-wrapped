@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.3 (2021-08-25)
+### Fix
+* **iows:** Return `None` instead of empty Box if no category specified ([`e4bbd4a`](https://github.com/vrslev/ikea-api-wrapped/commit/e4bbd4a5a8c83c2375658f29edef66ff7a2f986c))
+
 ## v0.3.2 (2021-08-23)
 ### Fix
 * **get_items:** Don't fetch child items in ingka item, ([`6fdd1fa`](https://github.com/vrslev/ikea-api-wrapped/commit/6fdd1fa4769882449245e66e80fe41671ab66f84))
