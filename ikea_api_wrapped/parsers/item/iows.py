@@ -118,17 +118,17 @@ class IowsItem:
     def get_url(self):
         return f"{Constants.BASE_URL}/ru/ru/p/-{'s' + self.item_code if self.is_combination else self.item_code}"
 
-    def get_category_name_and_url(self) -> tuple[str, str]:
+    def get_category_name_and_url(self) -> tuple[str | None, str | None]:
         catalog_list: list[object | list[object]] = self.d.CatalogRefList.CatalogRef
         idx = 0 if len(catalog_list) == 1 else 1
-        category: list[object] | object = catalog_list[
-            idx
-        ].CatalogElementList.CatalogElement
+        category: list[object] | object = catalog_list[idx].CatalogRef.CatalogElement
         if isinstance(category, list):
             category = category[0]
         return (
-            category.CatalogElementName,
-            f"{Constants.BASE_URL}/ru/ru/cat/-{category.CatalogElementId}",
+            category.CatalogElementName or None,
+            f"{Constants.BASE_URL}/ru/ru/cat/-{category.CatalogElementId}"
+            if category.CatalogElementId
+            else None,
         )
 
 

@@ -5,7 +5,7 @@ from typing import TypedDict
 
 class ChildItemDict(TypedDict):
     item_code: str
-    item_name: str | None
+    item_name: str | None  # TODO: Rename to name
     weight: float
     qty: int
 
@@ -19,5 +19,5 @@ class ParsedItem(TypedDict):
     child_items: list[ChildItemDict]
     price: int
     url: str
-    category_name: str
-    category_url: str
+    category_name: str | None
+    category_url: str | None
