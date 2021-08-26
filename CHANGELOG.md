@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.5 (2021-08-26)
+### Fix
+* Return empty dict in `get_purchase_info` if couldn't get purchase info ([`5a8bfe1`](https://github.com/vrslev/ikea-api-wrapped/commit/5a8bfe14ba28d11764036b418b61a6f962c85d5a))
+
 ## v0.3.4 (2021-08-26)
 ### Fix
 * Dump ikea-api version ([`4cf8e50`](https://github.com/vrslev/ikea-api-wrapped/commit/4cf8e50740e09b0604e17ac51f4ede7fbfd37772))
