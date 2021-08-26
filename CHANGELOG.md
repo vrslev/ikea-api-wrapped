@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.4 (2021-08-26)
+### Fix
+* Dump ikea-api version ([`4cf8e50`](https://github.com/vrslev/ikea-api-wrapped/commit/4cf8e50740e09b0604e17ac51f4ede7fbfd37772))
+
 ## v0.3.3 (2021-08-25)
 ### Fix
 * **iows:** Return `None` instead of empty Box if no category specified ([`e4bbd4a`](https://github.com/vrslev/ikea-api-wrapped/commit/e4bbd4a5a8c83c2375658f29edef66ff7a2f986c))
