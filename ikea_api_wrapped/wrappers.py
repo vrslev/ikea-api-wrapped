@@ -43,7 +43,10 @@ def get_purchase_info(
         email=email,
         queries=[OrderInfoQuery.StatusBannerOrder, OrderInfoQuery.CostsOrder],
     )
-    return StatusBannerOrder(status_banner)() | CostsOrder(costs)()
+    res: PurchaseInfoDict = StatusBannerOrder(status_banner)() | CostsOrder(costs)()
+    if not any(res.values()):
+        return {}
+    return res
 
 
 def get_delivery_services(api: IkeaApi, items: dict[str, int], zip_code: str):

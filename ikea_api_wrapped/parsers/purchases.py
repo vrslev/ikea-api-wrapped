@@ -81,7 +81,7 @@ class CostsOrder:
 
 
 class StatusBannerOrderDict(TypedDict):
-    purchase_date: str
+    purchase_date: str | None
     delivery_date: str | None
 
 
@@ -89,8 +89,8 @@ class StatusBannerOrder:
     def __init__(self, status_banner_order: dict[str, Any]):
         self.d = get_box(status_banner_order).data.order
 
-    def _get_purchase_date(self) -> str:
-        return self.d.dateAndTime.date
+    def _get_purchase_date(self) -> str | None:
+        return self.d.dateAndTime.date or None
 
     def _get_delivery_date(self) -> str | None:
         delivery_methods: list[Box] = self.d.deliveryMethods
