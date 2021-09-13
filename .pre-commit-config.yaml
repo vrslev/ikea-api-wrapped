@@ -7,7 +7,7 @@ repos:
       - id: check-toml
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.25.0
+    rev: v2.26.0
     hooks:
       - id: pyupgrade
         args: [--py39-plus]
@@ -33,7 +33,7 @@ repos:
       - id: bandit
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.3.2
+    rev: v2.4.0
     hooks:
       - id: prettier
         exclude: CHANGELOG.md
