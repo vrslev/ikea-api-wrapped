@@ -36,4 +36,3 @@ repos:
     rev: v2.4.1
     hooks:
       - id: prettier
-        exclude: CHANGELOG.md
