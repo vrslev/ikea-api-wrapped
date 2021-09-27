@@ -11,22 +11,13 @@ jobs:
     concurrency: release
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: Install Python 3.9
-        uses: actions/setup-python@v2
+      - uses: actions/setup-python@v2
         with:
           python-version: 3.9
-
-      - name: Cache
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cache/pip
-          key: ${{ runner.os }}-pip
 
       - name: Set git user
         run: |
@@ -34,9 +25,9 @@ jobs:
           git config --global user.email "action@github.com"
 
       - name: Install semantic-release
-        run: pip install -U python-semantic-release
+        run: pip install python-semantic-release
 
-      - name: Run Semantic-release
+      - name: Release
         run: semantic-release publish -D commit_author="github-actions <action@github.com>"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
