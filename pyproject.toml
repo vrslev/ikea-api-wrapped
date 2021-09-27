@@ -17,7 +17,7 @@ reportUnusedCallResult = true
 
 [tool.semantic_release]
 branch = "main"
-version_variable = ["ikea_api_wrapped/__init__.py:__version__"]
+version_variable = ["src/ikea_api_wrapped/__init__.py:__version__"]
 build_command = "pip install build && python -m build"
 commit_subject = "сhore: Update version to {version}"
 upload_to_pypi = false
