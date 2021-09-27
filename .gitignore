@@ -1,17 +1,10 @@
-#### macos ####
-# General
 *.DS_Store
 
-#### python ####
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+.vscode/
 
-# Distribution / packaging
-dist/
 *.egg-info/
-*.egg
 
-# Environments
+__pycache__/
+*.pyc
+
 venv/
