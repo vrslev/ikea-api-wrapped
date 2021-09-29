@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.8 (2021-09-29)
+### Fix
+* Dump versions ([`bfd64c0`](https://github.com/vrslev/ikea-api-wrapped/commit/bfd64c0391541aee5e96866546635a00dc25333a))
+
 ## v0.3.7 (2021-08-31)
 ### Fix
 * Bump ikea-api version ([`b98ae57`](https://github.com/vrslev/ikea-api-wrapped/commit/b98ae578ebe6177c587a09caded49c1c7957166f))
