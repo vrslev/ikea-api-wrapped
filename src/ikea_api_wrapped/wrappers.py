@@ -20,6 +20,7 @@ from ikea_api_wrapped.parsers.order_capture import (
 from ikea_api_wrapped.parsers.purchases import (
     CostsOrder,
     CostsOrderDict,
+    PurchaseHistoryItemDict,
     StatusBannerOrder,
     StatusBannerOrderDict,
     parse_purchase_history,
@@ -34,7 +35,7 @@ class PurchaseInfoDict(StatusBannerOrderDict, CostsOrderDict):
     pass
 
 
-def get_purchase_history(api: IkeaApi):
+def get_purchase_history(api: IkeaApi) -> list[PurchaseHistoryItemDict]:
     response = api.Purchases.history()
     return parse_purchase_history(response)
 
@@ -75,10 +76,15 @@ def get_delivery_services(
     return {"delivery_options": options, "cannot_add": cannot_add}
 
 
-def add_items_to_cart(api: IkeaApi, items: dict[str, int]):
+class AddItemsToCartResponse(TypedDict):
+    message: dict[str, Any]
+    cannot_add: list[str]
+
+
+def add_items_to_cart(api: IkeaApi, items: dict[str, int]) -> AddItemsToCartResponse:
     api.Cart.clear()  # type: ignore
 
-    res: dict[str, dict[str, Any] | list[Any] | None] = {
+    res: AddItemsToCartResponse = {
         "cannot_add": [],
         "message": None,
     }
