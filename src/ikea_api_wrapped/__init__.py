@@ -15,7 +15,6 @@ from ikea_api_wrapped.wrappers import (
 
 __version__ = "0.3.8"
 __all__ = [
-    "unshorten_ingka_pagelinks",
     "get_item_codes",
     "format_item_code",
     "add_items_to_cart",
@@ -26,15 +25,11 @@ __all__ = [
 ]
 
 
-def _get_location(response: aiohttp.ClientResponse):
-    return response.headers.get("Location")
-
-
 def _fetch_location_headers(urls: list[str]):
     async def main():
         async def fetch(session: aiohttp.ClientSession, url: str):
             async with session.get(url, allow_redirects=False) as r:
-                return _get_location(r)
+                return r.headers.get("Location")
 
         async def fetch_all(session: aiohttp.ClientSession):
             tasks = (asyncio.create_task(fetch(session, url)) for url in urls)
@@ -47,7 +42,7 @@ def _fetch_location_headers(urls: list[str]):
     return loop.run_until_complete(main())
 
 
-def unshorten_ingka_pagelinks(message: str):
+def _unshorten_ingka_pagelinks(message: str) -> tuple[str | None, ...]:
     postfixes = re.findall("ingka.page.link/([0-9A-z]+)", message)
     if not postfixes:
         return message
@@ -69,13 +64,13 @@ def _get_item_codes_from_string(message: str) -> list[str]:
 
 
 def get_item_codes(message: str | int | list[str | int]) -> list[str]:
-    if not isinstance(message, str):
-        message = str(message)
-    return _get_item_codes_from_string(unshorten_ingka_pagelinks(message))
+    message = str(message)
+    return _get_item_codes_from_string(
+        " ".join(_unshorten_ingka_pagelinks(message)) + " " + message
+    )
 
 
-def format_item_code(item_code: str):
-    matches = _get_item_codes_from_string(item_code)
-    if matches:
+def format_item_code(item_code: str) -> str:
+    if matches := _get_item_codes_from_string(item_code):
         item_code = matches[0]
-    return item_code[0:3] + "." + item_code[3:6] + "." + item_code[6:8]
+        return item_code[0:3] + "." + item_code[3:6] + "." + item_code[6:8]
