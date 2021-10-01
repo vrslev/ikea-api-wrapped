@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.9 (2021-10-01)
+### Fix
+* Add missing return type hints ([`533c4d5`](https://github.com/vrslev/ikea-api-wrapped/commit/533c4d5c4330d5d47730512e8798e4c9faefbfdc))
+
 ## v0.3.8 (2021-09-29)
 ### Fix
 * Dump versions ([`bfd64c0`](https://github.com/vrslev/ikea-api-wrapped/commit/bfd64c0391541aee5e96866546635a00dc25333a))
