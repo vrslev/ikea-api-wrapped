@@ -7,12 +7,16 @@ from ikea_api.endpoints import fetch_items_specs
 from ikea_api.endpoints.item import parse_item_code
 from ikea_api.endpoints.purchases import OrderInfoQuery
 from ikea_api.errors import GraphqlError, ItemFetchError, OrderCaptureError
+from typing_extensions import TypedDict
 
 from ikea_api_wrapped.parsers.item import ParsedItem
 from ikea_api_wrapped.parsers.item.ingka import IngkaItemDict, parse_ingka_item
 from ikea_api_wrapped.parsers.item.iows import parse_iows_item
 from ikea_api_wrapped.parsers.item.pip import PipItemDict, parse_pip_item
-from ikea_api_wrapped.parsers.order_capture import parse_delivery_options
+from ikea_api_wrapped.parsers.order_capture import (
+    DeliveryOptionDict,
+    parse_delivery_options,
+)
 from ikea_api_wrapped.parsers.purchases import (
     CostsOrder,
     CostsOrderDict,
@@ -49,7 +53,14 @@ def get_purchase_info(
     return res
 
 
-def get_delivery_services(api: IkeaApi, items: dict[str, int], zip_code: str):
+class GetDeliveryServicesResponse(TypedDict):
+    delivery_options: list[DeliveryOptionDict]
+    cannot_add: list[str]
+
+
+def get_delivery_services(
+    api: IkeaApi, items: dict[str, int], zip_code: str
+) -> GetDeliveryServicesResponse:
     cannot_add: list[str] = add_items_to_cart(api, items)["cannot_add"]  # type: ignore
 
     try:

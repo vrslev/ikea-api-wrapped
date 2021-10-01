@@ -9,7 +9,7 @@ from ikea_api_wrapped.parsers import get_box
 STORE_NAMES = {"IKEA": "Интернет-магазин", "Санкт-Петербург: Парнас": "Парнас"}
 
 
-def parse_purchase_history(history: dict[str, Any]):
+def parse_purchase_history(history: dict[str, Any]) -> list[PurchaseHistoryItemDict]:
     list_: list[Box] = get_box(history).data.history
     return [PurchaseHistoryItem(i)() for i in list_]
 
