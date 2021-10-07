@@ -29,12 +29,17 @@ def parse_delivery_options(options_list: list[dict[str, Any]]):
     return [DeliveryOption(d)() for d in get_box_list(options_list)]
 
 
+class UnavailableItemDict(TypedDict):
+    item_code: str
+    available_qty: int
+
+
 class DeliveryOptionDict(TypedDict):
     delivery_date: date | None
     delivery_type: str
     price: int
     service_provider: str | None
-    unavailable_items: list[dict[str, str | int]]
+    unavailable_items: list[UnavailableItemDict]
 
 
 class DeliveryOption:
@@ -72,7 +77,7 @@ class DeliveryOption:
                         if provider in identifier:
                             return pretty_name
 
-    def _get_unavailable_items(self) -> list[dict[str, str | int]]:
+    def _get_unavailable_items(self) -> list[UnavailableItemDict]:
         raw_unavailable_items: list[Box] = self.d.unavailableItems or []
         return [
             {"item_code": item.itemNo, "available_qty": item.availableQuantity}
