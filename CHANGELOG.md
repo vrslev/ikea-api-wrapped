@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.11 (2021-10-07)
+### Fix
+* **OrderCapture:** Add type to unavailable item ([`9fa61b0`](https://github.com/vrslev/ikea-api-wrapped/commit/9fa61b0bccbb951a8773038599c228c424380659))
+
 ## v0.3.10 (2021-10-01)
 ### Fix
 * Add missing return type hints ([`a15efd6`](https://github.com/vrslev/ikea-api-wrapped/commit/a15efd651229e7c2294d82830e881f95bb38b909))
