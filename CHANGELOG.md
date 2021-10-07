@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.0 (2021-10-07)
+### Feature
+* Typing improvements ([#9](https://github.com/vrslev/ikea-api-wrapped/issues/9)) ([`0906fb2`](https://github.com/vrslev/ikea-api-wrapped/commit/0906fb2fafe50b9c8ff90cfa2d6939698b350a83))
+
 ## v0.3.11 (2021-10-07)
 ### Fix
 * **OrderCapture:** Add type to unavailable item ([`9fa61b0`](https://github.com/vrslev/ikea-api-wrapped/commit/9fa61b0bccbb951a8773038599c228c424380659))
