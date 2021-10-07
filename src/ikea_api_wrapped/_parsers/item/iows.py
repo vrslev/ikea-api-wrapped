@@ -7,8 +7,10 @@ from typing import Any
 from box import Box
 from ikea_api.constants import Constants
 
-from ikea_api_wrapped.parsers import get_box
-from ikea_api_wrapped.parsers.item import ChildItemDict, ParsedItem
+from ikea_api_wrapped._parsers import get_box
+from ikea_api_wrapped.types import ChildItemDict, ParsedItem
+
+# pyright: reportUnknownMemberType=false
 
 
 def parse_iows_item(dictionary: dict[str, Any]):
@@ -37,11 +39,13 @@ class IowsItem:
             category_url=self.category_url,
         )
 
-    def get_is_combination(self) -> bool:
-        return self.d.ItemType == "SPR"
+    def get_is_combination(self):
+        item_type: str = self.d.ItemType
+        return item_type == "SPR"
 
-    def get_item_code(self) -> str:
-        return str(self.d.ItemNo)
+    def get_item_code(self):
+        item_code: int | str = self.d.ItemNo
+        return str(item_code)
 
     def get_name(self, item: Box | None = None):
         if not item:
@@ -58,7 +62,7 @@ class IowsItem:
         attrs = (first_part, second_part, measurement_text, design_text)
         return ", ".join(attr for attr in attrs if attr)
 
-    def get_image_url(self) -> str | None:
+    def get_image_url(self):
         images_raw: list[Any] = self.d.RetailItemImageList.RetailItemImage
         re_validate_image_url = re.compile(r"\.(png|jpg)$", re.IGNORECASE)
         all_images: dict[str, str] = {}
@@ -78,7 +82,7 @@ class IowsItem:
                 if size == acceptable_size:
                     return Constants.BASE_URL + image
 
-    def get_weight(self, item: Box | None = None) -> float:
+    def get_weight(self, item: Box | None = None):
         if not item:
             item = self.d
 
@@ -94,45 +98,47 @@ class IowsItem:
 
         return round(weight, 2)
 
-    def get_child_items(self) -> list[ChildItemDict]:
+    def get_child_items(self):
+        children: list[Box] = self.d.RetailItemCommChildList.RetailItemCommChild or []
         return [
-            {
-                "item_code": str(child.ItemNo),
-                "item_name": self.get_name(child),
-                "weight": self.get_weight(child),
-                "qty": child.Quantity,
-            }
-            for child in self.d.RetailItemCommChildList.RetailItemCommChild or []
+            ChildItemDict(
+                item_code=str(child.ItemNo),  # type: ignore
+                item_name=self.get_name(child),
+                weight=self.get_weight(child),
+                qty=int(child.Quantity),  # type: ignore
+            )
+            for child in children
         ]
 
-    def get_price(self) -> int:
-        price_list: list[
-            object
-        ] | object = self.d.RetailItemCommPriceList.RetailItemCommPrice
+    def get_price(self):
+        price_list: list[Box] | Box = self.d.RetailItemCommPriceList.RetailItemCommPrice
         if not price_list:
             return 0
         if isinstance(price_list, list):
-            return min(p.Price for p in price_list)
-        return price_list.Price
+            return int(min(p.Price for p in price_list))  # type: ignore
+        return int(price_list.Price)  # type: ignore
 
     def get_url(self):
-        return f"{Constants.BASE_URL}/ru/ru/p/-{'s' + self.item_code if self.is_combination else self.item_code}"
+        suffix = "s" + self.item_code if self.is_combination else self.item_code
+        return f"{Constants.BASE_URL}/ru/ru/p/-{suffix}"
 
-    def get_category_name_and_url(self) -> tuple[str | None, str | None]:
-        catalog_list: list[object | list[object]] = self.d.CatalogRefList.CatalogRef
+    def get_category_name_and_url(self):
+        catalog_list: list[Box | list[Box]] = self.d.CatalogRefList.CatalogRef
         idx = 0 if len(catalog_list) == 1 else 1
-        category: list[object] | object = catalog_list[idx].CatalogRef.CatalogElement
+        category: list[Box] | Box = catalog_list[idx].CatalogRef.CatalogElement  # type: ignore
         if isinstance(category, list):
             category = category[0]
-        return (
-            category.CatalogElementName or None,
+
+        name: str | None = category.CatalogElementName or None
+        url: str | None = (
             f"{Constants.BASE_URL}/ru/ru/cat/-{category.CatalogElementId}"
             if category.CatalogElementId
-            else None,
+            else None
         )
+        return name, url
 
 
-def get_rid_of_dollars(d: dict[Any, Any]):
+def get_rid_of_dollars(d: dict[str, Any]):
     d_json = json.dumps(d)
     d_json = re.sub(
         r'{"\$": ([^}]+)}', lambda x: x.group(1) if x.group(1) else "", d_json

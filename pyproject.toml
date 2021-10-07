@@ -5,15 +5,9 @@ target-version = ["py39"]
 profile = "black"
 
 [tool.pyright]
-exclude = ["venv"]
 typeCheckingMode = "strict"
 pythonVersion = "3.9"
 reportMissingTypeStubs = false
-reportGeneralTypeIssues = false
-reportUnknownMemberType = false
-reportUnknownVariableType = false
-reportUnknownArgumentType = false
-reportUnusedCallResult = true
 
 [tool.semantic_release]
 branch = "main"
