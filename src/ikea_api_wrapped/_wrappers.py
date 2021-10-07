@@ -8,11 +8,11 @@ from ikea_api.endpoints.item import parse_item_code
 from ikea_api.endpoints.purchases import OrderInfoQuery
 from ikea_api.errors import GraphqlError, ItemFetchError, OrderCaptureError
 
-from ikea_api_wrapped.parsers.item.ingka import parse_ingka_item
-from ikea_api_wrapped.parsers.item.iows import parse_iows_item
-from ikea_api_wrapped.parsers.item.pip import parse_pip_item
-from ikea_api_wrapped.parsers.order_capture import parse_delivery_options
-from ikea_api_wrapped.parsers.purchases import (
+from ikea_api_wrapped._parsers.item.ingka import parse_ingka_item
+from ikea_api_wrapped._parsers.item.iows import parse_iows_item
+from ikea_api_wrapped._parsers.item.pip import parse_pip_item
+from ikea_api_wrapped._parsers.order_capture import parse_delivery_options
+from ikea_api_wrapped._parsers.purchases import (
     CostsOrder,
     StatusBannerOrder,
     parse_purchase_history,
@@ -21,15 +21,12 @@ from ikea_api_wrapped.types import (
     AddItemsToCartResponse,
     GetDeliveryServicesResponse,
     IngkaItemDict,
+    NoDeliveryOptionsAvailableError,
     ParsedItem,
     PipItemDict,
     PurchaseHistoryItemDict,
     PurchaseInfoDict,
 )
-
-
-class NoDeliveryOptionsAvailableError(Exception):
-    pass
 
 
 def get_purchase_history(api: IkeaApi) -> list[PurchaseHistoryItemDict]:
@@ -45,19 +42,19 @@ def get_purchase_info(
         email=email,
         queries=[OrderInfoQuery.StatusBannerOrder, OrderInfoQuery.CostsOrder],
     )
-    res: PurchaseInfoDict = StatusBannerOrder(status_banner)() | CostsOrder(costs)()
+    res: PurchaseInfoDict = StatusBannerOrder(status_banner)() | CostsOrder(costs)()  # type: ignore
     if not any(res.values()):
-        return {}
+        return {}  # type: ignore
     return res
 
 
 def get_delivery_services(
     api: IkeaApi, items: dict[str, int], zip_code: str
 ) -> GetDeliveryServicesResponse:
-    cannot_add: list[str] = add_items_to_cart(api, items)["cannot_add"]  # type: ignore
+    cannot_add = add_items_to_cart(api, items)["cannot_add"]
 
     try:
-        response: list[dict[str, Any]] = api.OrderCapture(zip_code)  # type: ignore
+        response = api.OrderCapture(zip_code)
     except OrderCaptureError as e:
         if e.error_code in [60005, 60006]:
             raise NoDeliveryOptionsAvailableError
@@ -65,16 +62,13 @@ def get_delivery_services(
             raise
 
     options = parse_delivery_options(response)
-    return {"delivery_options": options, "cannot_add": cannot_add}
+    return GetDeliveryServicesResponse(delivery_options=options, cannot_add=cannot_add)
 
 
 def add_items_to_cart(api: IkeaApi, items: dict[str, int]) -> AddItemsToCartResponse:
-    api.Cart.clear()  # type: ignore
+    api.Cart.clear()
 
-    res: AddItemsToCartResponse = {
-        "cannot_add": [],
-        "message": None,
-    }
+    res = AddItemsToCartResponse(cannot_add=[], message=None)
 
     while True:
         try:
@@ -83,6 +77,9 @@ def add_items_to_cart(api: IkeaApi, items: dict[str, int]) -> AddItemsToCartResp
         except GraphqlError as exc:
             if not res["cannot_add"]:
                 res["cannot_add"] = []
+
+            if exc.errors is None:
+                raise
 
             for error in exc.errors:
                 if error["extensions"]["code"] == "INVALID_ITEM_NUMBER":
@@ -105,7 +102,7 @@ def _get_iows_items(item_codes: list[str]):
 
 
 def _bind_ingka_and_pip_objects(ingka: IngkaItemDict, pip: PipItemDict) -> ParsedItem:
-    return ingka | pip
+    return ingka | pip  # type: ignore
 
 
 def _get_ingka_pip_items(item_codes: list[str]):

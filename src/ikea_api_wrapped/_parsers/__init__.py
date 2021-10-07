@@ -9,5 +9,5 @@ def get_box(d: dict[Any, Any]):
     return Box(d, default_box=True, default_box_no_key_error=True)
 
 
-def get_box_list(l: list[dict[Any, Any]]):
+def get_box_list(l: list[dict[Any, Any]]) -> list[Box]:
     return BoxList(l, default_box=True, default_box_no_key_error=True)

@@ -5,7 +5,7 @@ from typing import Any
 
 from box import Box
 
-from ikea_api_wrapped.parsers import get_box_list
+from ikea_api_wrapped._parsers import get_box_list
 from ikea_api_wrapped.types import DeliveryOptionDict, UnavailableItemDict
 
 DELIVERY_TYPES = {
@@ -25,6 +25,8 @@ SERVICE_PROVIDERS = {
     "russianpost": "Почта России",
 }
 
+# pyright: reportUnknownMemberType=false
+
 
 def parse_delivery_options(options_list: list[dict[str, Any]]):
     return [DeliveryOption(d)() for d in get_box_list(options_list)]
@@ -34,7 +36,7 @@ class DeliveryOption:
     def __init__(self, dictionary: Box):
         self.d = dictionary
 
-    def _get_delivery_date(self) -> date | None:
+    def get_delivery_date(self) -> date | None:
         deliveries: list[Box] | None = self.d.deliveries
         if deliveries:
             raw_delivery_time: str | None = deliveries[
@@ -45,16 +47,17 @@ class DeliveryOption:
                     raw_delivery_time, "%Y-%m-%dT%H:%M:%S.%f"
                 ).date()
 
-    def _get_delivery_type(self):
+    def get_delivery_type(self):
         raw_delivery_type: str = self.d.fulfillmentMethodType
         raw_service_type: str = self.d.servicetype
         service_type: str = SERVICE_TYPES.get(raw_service_type, "")
         return DELIVERY_TYPES.get(raw_delivery_type, raw_delivery_type) + service_type
 
-    def _get_price(self):
-        return int(self.d.servicePrice.amount)
+    def get_price(self):
+        price: float = self.d.servicePrice.amount
+        return int(price)
 
-    def _get_service_provider(self):
+    def get_service_provider(self):
         deliveries: list[Box] = self.d.deliveries
         if deliveries:
             pickup_points: list[Box] = deliveries[0].pickUpPoints
@@ -65,19 +68,22 @@ class DeliveryOption:
                         if provider in identifier:
                             return pretty_name
 
-    def _get_unavailable_items(self) -> list[UnavailableItemDict]:
+    def get_unavailable_items(self):
         raw_unavailable_items: list[Box] = self.d.unavailableItems or []
         return [
-            {"item_code": item.itemNo, "available_qty": item.availableQuantity}
+            UnavailableItemDict(
+                item_code=item.itemNo,  # type: ignore
+                available_qty=item.availableQuantity,  # type: ignore
+            )
             for item in raw_unavailable_items
             if item.itemNo is not None and item.availableQuantity is not None
         ]
 
-    def __call__(self) -> DeliveryOptionDict:
-        return {
-            "delivery_date": self._get_delivery_date(),
-            "delivery_type": self._get_delivery_type(),
-            "price": self._get_price(),
-            "service_provider": self._get_service_provider(),
-            "unavailable_items": self._get_unavailable_items(),
-        }
+    def __call__(self):
+        return DeliveryOptionDict(
+            delivery_date=self.get_delivery_date(),
+            delivery_type=self.get_delivery_type(),
+            price=self.get_price(),
+            service_provider=self.get_service_provider(),
+            unavailable_items=self.get_unavailable_items(),
+        )

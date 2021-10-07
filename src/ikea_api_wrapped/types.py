@@ -41,11 +41,6 @@ class PipItemDict(TypedDict):
     category_url: str | None
 
 
-class GetDeliveryServicesResponse(TypedDict):
-    delivery_options: list[DeliveryOptionDict]
-    cannot_add: list[str]
-
-
 class UnavailableItemDict(TypedDict):
     item_code: str
     available_qty: int
@@ -57,6 +52,15 @@ class DeliveryOptionDict(TypedDict):
     price: int
     service_provider: str | None
     unavailable_items: list[UnavailableItemDict]
+
+
+class GetDeliveryServicesResponse(TypedDict):
+    delivery_options: list[DeliveryOptionDict]
+    cannot_add: list[str]
+
+
+class NoDeliveryOptionsAvailableError(Exception):
+    pass
 
 
 class CostsOrderDict(TypedDict):
@@ -83,5 +87,5 @@ class PurchaseInfoDict(StatusBannerOrderDict, CostsOrderDict):
 
 
 class AddItemsToCartResponse(TypedDict):
-    message: dict[str, Any]
+    message: dict[str, Any] | None
     cannot_add: list[str]
