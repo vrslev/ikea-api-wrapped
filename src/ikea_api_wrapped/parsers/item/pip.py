@@ -1,21 +1,14 @@
 from __future__ import annotations
 
 import re
-from typing import Any, TypedDict
+from typing import Any
 
 from ikea_api_wrapped.parsers import get_box
+from ikea_api_wrapped.types import PipItemDict
 
 
 def parse_pip_item(dictionary: dict[str, Any]):
     return PipItem(dictionary)()
-
-
-class PipItemDict(TypedDict):
-    item_code: str
-    price: int
-    url: str
-    category_name: str | None
-    category_url: str | None
 
 
 class PipItem:

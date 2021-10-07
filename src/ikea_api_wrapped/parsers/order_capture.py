@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Any, TypedDict
+from typing import Any
 
 from box import Box
 
 from ikea_api_wrapped.parsers import get_box_list
+from ikea_api_wrapped.types import DeliveryOptionDict, UnavailableItemDict
 
 DELIVERY_TYPES = {
     "HOME_DELIVERY": "Доставка",
@@ -27,19 +28,6 @@ SERVICE_PROVIDERS = {
 
 def parse_delivery_options(options_list: list[dict[str, Any]]):
     return [DeliveryOption(d)() for d in get_box_list(options_list)]
-
-
-class UnavailableItemDict(TypedDict):
-    item_code: str
-    available_qty: int
-
-
-class DeliveryOptionDict(TypedDict):
-    delivery_date: date | None
-    delivery_type: str
-    price: int
-    service_provider: str | None
-    unavailable_items: list[UnavailableItemDict]
 
 
 class DeliveryOption:

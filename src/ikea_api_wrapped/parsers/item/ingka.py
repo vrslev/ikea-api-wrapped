@@ -1,25 +1,16 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Callable, TypedDict
+from typing import Any, Callable
 
 from box import Box
 
 from ikea_api_wrapped.parsers import get_box
-from ikea_api_wrapped.parsers.item import ChildItemDict
+from ikea_api_wrapped.types import ChildItemDict, IngkaItemDict
 
 
 def parse_ingka_item(dictionary: dict[str, Any]):
     return IngkaItem(dictionary)()
-
-
-class IngkaItemDict(TypedDict):
-    is_combination: bool
-    item_code: str
-    name: str
-    image_url: str | None
-    weight: float
-    child_items: list[ChildItemDict]
 
 
 class IngkaItem:

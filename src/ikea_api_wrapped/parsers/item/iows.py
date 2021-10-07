@@ -8,7 +8,7 @@ from box import Box
 from ikea_api.constants import Constants
 
 from ikea_api_wrapped.parsers import get_box
-from ikea_api_wrapped.parsers.item import ChildItemDict, ParsedItem
+from ikea_api_wrapped.types import ChildItemDict, ParsedItem
 
 
 def parse_iows_item(dictionary: dict[str, Any]):

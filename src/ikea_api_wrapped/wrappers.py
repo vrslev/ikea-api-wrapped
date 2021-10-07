@@ -7,31 +7,28 @@ from ikea_api.endpoints import fetch_items_specs
 from ikea_api.endpoints.item import parse_item_code
 from ikea_api.endpoints.purchases import OrderInfoQuery
 from ikea_api.errors import GraphqlError, ItemFetchError, OrderCaptureError
-from typing_extensions import TypedDict
 
-from ikea_api_wrapped.parsers.item import ParsedItem
-from ikea_api_wrapped.parsers.item.ingka import IngkaItemDict, parse_ingka_item
+from ikea_api_wrapped.parsers.item.ingka import parse_ingka_item
 from ikea_api_wrapped.parsers.item.iows import parse_iows_item
-from ikea_api_wrapped.parsers.item.pip import PipItemDict, parse_pip_item
-from ikea_api_wrapped.parsers.order_capture import (
-    DeliveryOptionDict,
-    parse_delivery_options,
-)
+from ikea_api_wrapped.parsers.item.pip import parse_pip_item
+from ikea_api_wrapped.parsers.order_capture import parse_delivery_options
 from ikea_api_wrapped.parsers.purchases import (
     CostsOrder,
-    CostsOrderDict,
-    PurchaseHistoryItemDict,
     StatusBannerOrder,
-    StatusBannerOrderDict,
     parse_purchase_history,
+)
+from ikea_api_wrapped.types import (
+    AddItemsToCartResponse,
+    GetDeliveryServicesResponse,
+    IngkaItemDict,
+    ParsedItem,
+    PipItemDict,
+    PurchaseHistoryItemDict,
+    PurchaseInfoDict,
 )
 
 
 class NoDeliveryOptionsAvailableError(Exception):
-    pass
-
-
-class PurchaseInfoDict(StatusBannerOrderDict, CostsOrderDict):
     pass
 
 
@@ -54,11 +51,6 @@ def get_purchase_info(
     return res
 
 
-class GetDeliveryServicesResponse(TypedDict):
-    delivery_options: list[DeliveryOptionDict]
-    cannot_add: list[str]
-
-
 def get_delivery_services(
     api: IkeaApi, items: dict[str, int], zip_code: str
 ) -> GetDeliveryServicesResponse:
@@ -74,11 +66,6 @@ def get_delivery_services(
 
     options = parse_delivery_options(response)
     return {"delivery_options": options, "cannot_add": cannot_add}
-
-
-class AddItemsToCartResponse(TypedDict):
-    message: dict[str, Any]
-    cannot_add: list[str]
 
 
 def add_items_to_cart(api: IkeaApi, items: dict[str, int]) -> AddItemsToCartResponse:

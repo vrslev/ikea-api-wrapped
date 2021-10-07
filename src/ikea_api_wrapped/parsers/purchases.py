@@ -1,10 +1,15 @@
 from __future__ import annotations
 
-from typing import Any, TypedDict
+from typing import Any
 
 from box import Box
 
 from ikea_api_wrapped.parsers import get_box
+from ikea_api_wrapped.types import (
+    CostsOrderDict,
+    PurchaseHistoryItemDict,
+    StatusBannerOrderDict,
+)
 
 STORE_NAMES = {"IKEA": "Интернет-магазин", "Санкт-Петербург: Парнас": "Парнас"}
 
@@ -12,15 +17,6 @@ STORE_NAMES = {"IKEA": "Интернет-магазин", "Санкт-Петер
 def parse_purchase_history(history: dict[str, Any]) -> list[PurchaseHistoryItemDict]:
     list_: list[Box] = get_box(history).data.history
     return [PurchaseHistoryItem(i)() for i in list_]
-
-
-class PurchaseHistoryItemDict(TypedDict):
-    datetime: str | None
-    datetime_formatted: str
-    price: float
-    purchase_id: int
-    status: str
-    store: str | None
 
 
 class PurchaseHistoryItem:
@@ -58,11 +54,6 @@ class PurchaseHistoryItem:
         )
 
 
-class CostsOrderDict(TypedDict):
-    delivery_cost: float
-    total_cost: float
-
-
 class CostsOrder:
     def __init__(self, costs_order: dict[str, Any]):
         self.d = get_box(costs_order).data.order.costs
@@ -78,11 +69,6 @@ class CostsOrder:
             delivery_cost=self._get_delivery_cost(),
             total_cost=self._get_total_cost(),
         )
-
-
-class StatusBannerOrderDict(TypedDict):
-    purchase_date: str | None
-    delivery_date: str | None
 
 
 class StatusBannerOrder:
