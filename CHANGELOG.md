@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.1 (2021-10-17)
+### Fix
+* **Cart, OrderCapture:** Handle case when no items can be added ([`dec13b8`](https://github.com/vrslev/ikea-api-wrapped/commit/dec13b8e95e10f1fc10c812bbae4c0e6d9ce85cc))
+
 ## v0.4.0 (2021-10-07)
 ### Feature
 * Typing improvements ([#9](https://github.com/vrslev/ikea-api-wrapped/issues/9)) ([`0906fb2`](https://github.com/vrslev/ikea-api-wrapped/commit/0906fb2fafe50b9c8ff90cfa2d6939698b350a83))
