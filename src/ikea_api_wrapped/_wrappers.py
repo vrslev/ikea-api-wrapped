@@ -52,6 +52,8 @@ def get_delivery_services(
     api: IkeaApi, items: dict[str, int], zip_code: str
 ) -> GetDeliveryServicesResponse:
     cannot_add = add_items_to_cart(api, items)["cannot_add"]
+    if not set(items.keys()) ^ set(cannot_add):  # if cannot add all items
+        return GetDeliveryServicesResponse(delivery_options=[], cannot_add=cannot_add)
 
     try:
         response = api.OrderCapture(zip_code)
@@ -69,10 +71,11 @@ def add_items_to_cart(api: IkeaApi, items: dict[str, int]) -> AddItemsToCartResp
     api.Cart.clear()
 
     res = AddItemsToCartResponse(cannot_add=[], message=None)
+    items_to_add = items.copy()
 
     while True:
         try:
-            res["message"] = api.Cart.add_items(items)
+            res["message"] = api.Cart.add_items(items_to_add)
             break
         except GraphqlError as exc:
             if not res["cannot_add"]:
@@ -87,7 +90,11 @@ def add_items_to_cart(api: IkeaApi, items: dict[str, int]) -> AddItemsToCartResp
                 else:
                     raise
 
-            [items.pop(i) for i in res["cannot_add"]]
+            for item in res["cannot_add"]:
+                items_to_add.pop(item)
+
+            if not items_to_add:
+                break
     return res
 
 
