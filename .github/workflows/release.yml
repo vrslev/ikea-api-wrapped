@@ -31,3 +31,4 @@ jobs:
         run: semantic-release publish -D commit_author="github-actions <github-actions@github.com>"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
