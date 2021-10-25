@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.2 (2021-10-25)
+### Fix
+* No event loop in parse_item_codes ([`2c382c0`](https://github.com/vrslev/ikea-api-wrapped/commit/2c382c0c00cae7d8af8fd5ff753534eca4adca78))
+
 ## v0.4.1 (2021-10-17)
 ### Fix
 * **Cart, OrderCapture:** Handle case when no items can be added ([`dec13b8`](https://github.com/vrslev/ikea-api-wrapped/commit/dec13b8e95e10f1fc10c812bbae4c0e6d9ce85cc))
