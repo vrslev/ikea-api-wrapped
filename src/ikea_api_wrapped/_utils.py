@@ -19,8 +19,7 @@ def _fetch_location_headers(urls: list[str]):
         async with aiohttp.ClientSession() as session:
             return await fetch_all(session)
 
-    loop = asyncio.get_event_loop()
-    return loop.run_until_complete(main())
+    return asyncio.run(main())
 
 
 def _unshorten_ingka_pagelinks(message: str):
