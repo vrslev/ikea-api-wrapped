@@ -99,7 +99,15 @@ class IowsItem:
         return round(weight, 2)
 
     def get_child_items(self):
-        children: list[Box] = self.d.RetailItemCommChildList.RetailItemCommChild or []
+        children: list[Box] | Box = (
+            self.d.RetailItemCommChildList.RetailItemCommChild or []
+        )
+        if isinstance(children, Box):
+            # When only one item in combination (which is quite rare)
+            # then .RetailItemCommChildList.RetailItemCommChild is not list.
+            # Case: 39275300
+            children = [children]
+
         return [
             ChildItemDict(
                 item_code=str(child.ItemNo),  # type: ignore
