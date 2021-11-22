@@ -4,7 +4,7 @@ if __name__ == "__main__":
     setup(
         name="ikea_api_wrapped",
         install_requires=[
-            "ikea-api==0.8.0",
+            "ikea-api==0.10.0",
             "python-box==5.4.1",
         ],
         extras_require={
