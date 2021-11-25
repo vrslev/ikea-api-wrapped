@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.5 (2021-11-25)
+### Fix
+* Updated description for PyPi ([`9c3f0fa`](https://github.com/vrslev/ikea-api-wrapped/commit/9c3f0fac267b948d0aa4f2a33c8cfa1478cc9ad8))
+
 ## v0.4.4 (2021-11-25)
 ### Fix
 * Add note that it is not supported anymore ([`d199cb9`](https://github.com/vrslev/ikea-api-wrapped/commit/d199cb9d03901558916aa4b3a1f810e22c669efe))
