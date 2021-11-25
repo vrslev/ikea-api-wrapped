@@ -3,6 +3,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.4 (2021-11-25)
+### Fix
+* Add note that it is not supported anymore ([`d199cb9`](https://github.com/vrslev/ikea-api-wrapped/commit/d199cb9d03901558916aa4b3a1f810e22c669efe))
+
 ## v0.4.3 (2021-11-01)
 ### Fix
 * **Item iows:** Children parsing when only one item in combo ([`c6a118e`](https://github.com/vrslev/ikea-api-wrapped/commit/c6a118e83e1d099ef340634619c4c05c2b7ed3ed))

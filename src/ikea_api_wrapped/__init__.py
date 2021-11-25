@@ -7,7 +7,7 @@ from ikea_api_wrapped._wrappers import (
     get_purchase_info,
 )
 
-__version__ = "0.4.3"
+__version__ = "0.4.4"
 __all__ = [
     "parse_item_codes",
     "format_item_code",
